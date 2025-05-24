@@ -64,12 +64,15 @@ void GLX::inf(){
     std::cout<<"Vendor:\t"<<glGetString(GL_VENDOR)<<"\n";
     std::cout<<"Renderer:\t"<<glGetString(GL_RENDERER)<<"\n";
     std::cout<<"Version:\t"<<glGetString(GL_VERSION)<<"\n";
+    std::cout<<"Shader Version:\t"<<glGetString(GL_SHADING_LANGUAGE_VERSION)<<"\n";
 }
 
 
 bool GLX::launch(){
+    GLenum err;
     try
     {
+       
     if (!glfwInit()) {
         std::cout << "Failed To Init GLX:: Error occured when initializing glfw.";
         glfwTerminate();
@@ -102,7 +105,21 @@ bool GLX::launch(){
         
         glViewport(0, 0, this->Window_Width,this->Window_Height);
         this->is_running=true;
-
+        //run post launch queue
+        for (auto& task:this->postLaunchQueue)
+        {
+            try
+            {
+                task();
+            }catch (...)
+            {
+                err = glGetError();
+                if (err != GL_NO_ERROR)
+                {
+                    std::cout<<"Open GL error"<<err<<"\n";
+                }
+            }
+        }
         while (!glfwWindowShouldClose(this->window))
         {
             glfwPollEvents();
@@ -111,7 +128,19 @@ bool GLX::launch(){
                 try
                 {
                     task();
-                }catch (...){}
+                }catch (...){
+                    try
+                    {
+                        task();
+                    }catch (...)
+                    {
+                        err = glGetError();
+                        if (err != GL_NO_ERROR)
+                        {
+                            std::cout<<"Open GL error"<<err<<"\n";
+                        }
+                    }
+                }
             }
             glfwSwapBuffers(this->window);
         }
@@ -119,9 +148,15 @@ bool GLX::launch(){
         return true;
     }catch (...)
     {
+        
         this->is_running=false;
         glfwTerminate();
         std::cout << "Failed To launch GLX.\n";
+        err = glGetError();
+        if (err != GL_NO_ERROR)
+        {
+            std::cout<<"Open GL error"<<err<<"\n";
+        }
         return false;
     }
 }
