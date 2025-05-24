@@ -114,18 +114,14 @@ void compileShader(){
 int main(){
     auto gl =std::make_unique<GLX>();
     gl->setAspectRatio(16,9);
-    gl->setWindowWidth(1280);
-    gl->setWindowHeight(988);
+    gl->setWindowWidth(1366);
+    gl->setWindowHeight(768);
     gl->setWindowTitle("GLX Window");
     gl->setIsForwardCompatable(true);
     gl->setFocusOnInit(true);
-    gl->postLaunch([=]()
-    {
-        CreateTriangle();
-        compileShader();
-        glUseProgram(shader);
-    });
-
+    gl->addPostLaunchProcedure(CreateTriangle);
+    gl->addPostLaunchProcedure(compileShader);
+    
     gl->onTick([=]()
     {
         glClearColor(0.0f,0.0f,0.0f,1.f);

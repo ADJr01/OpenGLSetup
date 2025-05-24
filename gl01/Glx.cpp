@@ -55,6 +55,7 @@ void GLX::setAspectRatio(int nume, int denume){
 
 void GLX::destroy(){
     this->tasklist.clear();
+    this->postLaunchQueue.clear();
     this->is_running=false;
     glfwDestroyWindow(this->window);
     glfwTerminate();
@@ -111,11 +112,10 @@ bool GLX::launch(){
             try
             {
                 task();
-            }catch (...)
-            {
+            }catch (...){
+                std::cout<<"post launch queue error\n";
                 err = glGetError();
-                if (err != GL_NO_ERROR)
-                {
+                if (err != GL_NO_ERROR){
                     std::cout<<"Open GL error"<<err<<"\n";
                 }
             }
@@ -129,11 +129,10 @@ bool GLX::launch(){
                 {
                     task();
                 }catch (...){
-                    try
-                    {
+                    try{
                         task();
-                    }catch (...)
-                    {
+                    }catch (...){
+                        std::cout<<"GLX:: onTick error\n";
                         err = glGetError();
                         if (err != GL_NO_ERROR)
                         {

@@ -45,7 +45,7 @@ private:
     }
     bool launch();
     template<typename Func, typename... Args>
-    void  postLaunch(Func func, Args... args) {
+    void  addPostLaunchProcedure(Func func, Args... args) {
         this->postLaunchQueue.push_back(std::bind(func, args...));
     }
     
