@@ -52,14 +52,18 @@ void GLX::setAspectRatio(int nume, int denume){
     this->WindowAspectRatio.denumerator = denume;
 }
 
-template<typename Func, typename... Args>
-   void  GLX::onTick(Func func, Args... args) {
-   this->tasklist.push_back(std::bind(func, args...));
-}
+
 void GLX::destroy(){
     this->tasklist.clear();
+    this->is_running=false;
     glfwDestroyWindow(this->window);
     glfwTerminate();
+}
+void GLX::inf(){
+    std::cout<<"GLX Version:\t"<<this->version<<"\n";
+    std::cout<<"Vendor:\t"<<glGetString(GL_VENDOR)<<"\n";
+    std::cout<<"Renderer:\t"<<glGetString(GL_RENDERER)<<"\n";
+    std::cout<<"Version:\t"<<glGetString(GL_VERSION)<<"\n";
 }
 
 
@@ -88,20 +92,34 @@ bool GLX::launch(){
         glfwGetFramebufferSize(this->window,&this->frame_buffer_width,&this->frame_buffer_height);
         glfwMakeContextCurrent(this->window);
         glewExperimental=this->gl_experimental?GL_TRUE:GL_FALSE;
+        if (glewInit()!=GLEW_OK)
+        {
+            std::cout << "Failed To Init GLX:: Error occured when initializing Window.\n";
+            glfwDestroyWindow(this->window);
+            glfwTerminate();
+            return false;
+        }
+        
         glViewport(0, 0, this->Window_Width,this->Window_Height);
         this->is_running=true;
 
         while (!glfwWindowShouldClose(this->window))
         {
             glfwPollEvents();
-            glClearColor(0.25f,0.66f,0.45f,0.88f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            for (auto& task:this->tasklist)
+            {
+                try
+                {
+                    task();
+                }catch (...){}
+            }
             glfwSwapBuffers(this->window);
         }
-        
+        this->is_running=false;
         return true;
     }catch (...)
     {
+        this->is_running=false;
         glfwTerminate();
         std::cout << "Failed To launch GLX.\n";
         return false;

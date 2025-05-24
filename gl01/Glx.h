@@ -12,6 +12,7 @@ struct Ratio{
 };
 class GLX{
 private:
+    double version = 0.01;
     GLFWwindow* window;
     Ratio WindowAspectRatio;
     bool is_running;
@@ -36,8 +37,11 @@ private:
     void setWindowWidth(int window_width);
     void setWindowTitle(std::string window_title);
     void setIsForwardCompatable(bool is_forward_compatable);
+    void inf();
     template<typename Func, typename... Args>
-    void onTick(Func func, Args... args);
+    void  onTick(Func func, Args... args) {
+        this->tasklist.push_back(std::bind(func, args...));
+    }
     bool launch();
     
 };
