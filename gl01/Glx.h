@@ -27,7 +27,7 @@ private:
     public:
     GLX();
     ~GLX();
-    void setAspectRatio(int width, int height);
+    void setAspectRatio(int nume, int denume);
     void setGLExperimental(bool experimental);
     void setVersionMajor(int ver_major);
     void setVersionMinor(int ver_minor);

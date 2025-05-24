@@ -18,7 +18,9 @@ GLX::GLX(){
     this->WindowAspectRatio.denumerator=9;
     this->gl_experimental=true;
 }
-
+GLX::~GLX(){
+    this->destroy();
+}
 void GLX::setVersionMajor(int version_major){
     this->open_gl_version_major=version_major;
 }
@@ -54,6 +56,12 @@ template<typename Func, typename... Args>
    void  GLX::onTick(Func func, Args... args) {
    this->tasklist.push_back(std::bind(func, args...));
 }
+void GLX::destroy(){
+    this->tasklist.clear();
+    glfwDestroyWindow(this->window);
+    glfwTerminate();
+}
+
 
 bool GLX::launch(){
     try
@@ -80,6 +88,16 @@ bool GLX::launch(){
         glfwGetFramebufferSize(this->window,&this->frame_buffer_width,&this->frame_buffer_height);
         glfwMakeContextCurrent(this->window);
         glewExperimental=this->gl_experimental?GL_TRUE:GL_FALSE;
+        glViewport(0, 0, this->Window_Width,this->Window_Height);
+        this->is_running=true;
+
+        while (!glfwWindowShouldClose(this->window))
+        {
+            glfwPollEvents();
+            glClearColor(0.25f,0.66f,0.45f,0.88f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glfwSwapBuffers(this->window);
+        }
         
         return true;
     }catch (...)
