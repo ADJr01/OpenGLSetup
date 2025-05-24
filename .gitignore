@@ -1,0 +1,45 @@
+﻿# Build results
+*.obj
+*.exe
+*.pch
+*.pdb
+*.idb
+*.ilk
+*.log
+
+# Visual Studio folders
+.idea/
+.vs/
+Debug/
+Release/
+x64/
+ipch/
+*.opensdf
+*.sdf
+*.cache
+*.VC.db
+
+# User-specific files
+*.user
+*.suo
+*.VC.opendb
+
+# Backup & temp files
+*.bak
+*.tmp
+*.~*
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+
+# Windows thumbnails
+Thumbs.db
+Desktop.ini
+
+# Git files
+*.orig
+*.rej
