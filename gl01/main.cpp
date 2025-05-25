@@ -18,9 +18,42 @@ const auto fragment_shader = R"(
 out vec4 color;
 
 void main(){
-     color = vec4(1,1.0,1.0,1.0);
+      color = vec4(1,1.0,1.0,1.0);
 
 })";
+
+void CreateTriangle();
+void addShader(GLuint shader,const char* shader_code,GLenum shader_type);
+void compileShader();
+
+int main(){
+    auto gl =std::make_unique<GLX>();
+    gl->setAspectRatio(16,9);
+    gl->setWindowWidth(1366);
+    gl->setWindowHeight(768);
+    gl->setWindowTitle("GLX Window");
+    gl->setIsForwardCompatable(true);
+    gl->setFocusOnInit(true);
+    gl->addPostLaunchProcedure(CreateTriangle);
+    gl->addPostLaunchProcedure(compileShader);
+    
+    gl->onTick([=]()
+    {
+        glClearColor(0.0f,0.0f,0.0f,1.f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glUseProgram(shader);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES,0,3);
+        glUseProgram(0);
+        glBindVertexArray(0);
+
+    });
+
+    gl->launch();
+    return 0;
+    
+}
+
 
 void CreateTriangle(){
     try
@@ -28,7 +61,7 @@ void CreateTriangle(){
         GLfloat vertices[] =  {
             -.3f, -.3f, 0.0f,
              .3f, -.3f, 0.0f,
-             0.0f,  0.1f, 0.0f
+            -0.3f,  0.1f, 0.0f,
         }; 
 
         glGenVertexArrays(1,&VAO); //generating a vertex array that will hold vertex Buffers. Mainly vertex data
@@ -46,17 +79,11 @@ void CreateTriangle(){
         std::cout<<"Triangle Defined successfully"<<std::endl;
     }catch(...)
     {
-        GLenum err;
-        if ((err = glGetError()) != GL_NO_ERROR)
-        {
-            std::cerr << "OpenGL error: " << err << std::endl;
-        }
         std::cout<<"Error creating triangle"<<glGetError()<<std::endl;
         return;
     }
 
 }
-
 void addShader(GLuint shader,const char* shader_code,GLenum shader_type){
     auto shader_program = glCreateShader(shader_type);
     const GLchar* shader_src[1];
@@ -79,7 +106,7 @@ void addShader(GLuint shader,const char* shader_code,GLenum shader_type){
 }
 
 void compileShader(){
-     shader = glCreateProgram();
+    shader = glCreateProgram();
     if (!shader)
     {
         std::cout<<"Failed to create shader"<<std::endl;
@@ -110,32 +137,3 @@ void compileShader(){
     }
     std::cout<<"Shader compiled successfully"<<std::endl;
 }
-
-int main(){
-    auto gl =std::make_unique<GLX>();
-    gl->setAspectRatio(16,9);
-    gl->setWindowWidth(1366);
-    gl->setWindowHeight(768);
-    gl->setWindowTitle("GLX Window");
-    gl->setIsForwardCompatable(true);
-    gl->setFocusOnInit(true);
-    gl->addPostLaunchProcedure(CreateTriangle);
-    gl->addPostLaunchProcedure(compileShader);
-    
-    gl->onTick([=]()
-    {
-        glClearColor(0.0f,0.0f,0.0f,1.f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(shader);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES,0,3);
-        glUseProgram(0);
-        glBindVertexArray(0);
-
-    });
-
-    gl->launch();
-    return 0;
-    
-}
-
