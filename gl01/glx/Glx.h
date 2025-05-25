@@ -5,7 +5,6 @@
 #include<GLFW/glfw3.h>
 #include<functional>
 #include<vector>
-#include "GlxShader.h"
 
 struct Ratio{
     int numerator;
@@ -41,7 +40,6 @@ private:
     void setIsForwardCompatable(bool is_forward_compatable);
     void inf();
     bool status();
-    GlxShader get_shader_tool();
     template<typename Func, typename... Args>
     void  onTick(Func func, Args... args) {
         this->tasklist.push_back(std::bind(func, args...));

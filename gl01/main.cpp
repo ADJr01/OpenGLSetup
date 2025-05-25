@@ -1,6 +1,6 @@
 #include<iostream>
 #include<memory>
-#include "Glx.h"
+#include "glx/Glx.h"
 
 GLuint VAO,VBO,shader;
 

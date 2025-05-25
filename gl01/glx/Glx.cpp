@@ -162,10 +162,6 @@ bool GLX::launch(){
         return false;
     }
 }
-GlxShader GLX::get_shader_tool(){
-    if (!this->status())return NULL;
-    GlxShader shader_tool(this->status());
-    return shader_tool;
-}
+
 
 
