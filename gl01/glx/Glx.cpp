@@ -6,6 +6,17 @@
 #include<vector>
 
 GLX::GLX(){
+    if (!glfwInit()) {
+        std::cout << "Failed To Init GLX:: Error occured when initializing glfw.";
+        glfwTerminate();
+    }
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    if (!monitor) {
+        std::cerr << "Failed to get primary monitor\n";
+        glfwTerminate();
+        return;
+    }
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
     this->window = nullptr;
     this->is_running=false;
     //By Default Using OpenGL4.1
@@ -18,10 +29,20 @@ GLX::GLX(){
     this->WindowAspectRatio.numerator=16;
     this->WindowAspectRatio.denumerator=9;
     this->gl_experimental=true;
+    this->WindowScreen.full_width= mode->width;
+    this->WindowScreen.full_height= mode->height;
+    
 }
 GLX::~GLX(){
     this->destroy();
 }
+int GLX::glx_primary_monitor_height(){
+    return this->WindowScreen.full_height;
+}
+int GLX::glx_primary_monitor_width(){
+    return this->WindowScreen.full_width;
+}
+
 void GLX::setVersionMajor(int version_major){
     this->open_gl_version_major=version_major;
 }
@@ -76,11 +97,6 @@ bool GLX::launch(){
     GLenum err;
     try
     {
-       
-    if (!glfwInit()) {
-        std::cout << "Failed To Init GLX:: Error occured when initializing glfw.";
-        glfwTerminate();
-    }
         //responsible for setting up 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, this->open_gl_version_major); //3.
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, this->open_gl_version_minor); //3
@@ -101,7 +117,7 @@ bool GLX::launch(){
         glewExperimental=this->gl_experimental?GL_TRUE:GL_FALSE;
         if (glewInit()!=GLEW_OK)
         {
-            std::cout << "Failed To Init GLX:: Error occured when initializing Window.\n";
+            std::cout << "Failed To Init GLEW:: Error occured when initializing GLEW.\n";
             glfwDestroyWindow(this->window);
             glfwTerminate();
             return false;

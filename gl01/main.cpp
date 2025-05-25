@@ -31,8 +31,8 @@ int main(){
     gl->setVersionMajor(3);
     gl->setVersionMinor(3);
     gl->setAspectRatio(16,9);
-    gl->setWindowWidth(1366);
-    gl->setWindowHeight(768);
+    gl->setWindowWidth(static_cast<int>(gl->glx_primary_monitor_width()*0.8));
+    gl->setWindowHeight(static_cast<int>(gl->glx_primary_monitor_height()*0.8));
     gl->setWindowTitle("GLX Window");
     gl->setIsForwardCompatable(true);
     gl->setFocusOnInit(true);

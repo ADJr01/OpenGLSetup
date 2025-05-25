@@ -10,11 +10,18 @@ struct Ratio{
     int numerator;
     int denumerator;
 };
+
+struct Screen{
+    int full_width;
+    int full_height;
+};
+
 class GLX{
 private:
     double version = 0.01;
     GLFWwindow* window;
     Ratio WindowAspectRatio;
+    Screen WindowScreen;
     bool is_running;
     bool gl_experimental;
     std::string Window_title;
@@ -39,6 +46,8 @@ private:
     void setWindowTitle(std::string window_title);
     void setIsForwardCompatable(bool is_forward_compatable);
     void inf();
+    int glx_primary_monitor_width();
+    int glx_primary_monitor_height();
     bool status();
     template<typename Func, typename... Args>
     void  onTick(Func func, Args... args) {
