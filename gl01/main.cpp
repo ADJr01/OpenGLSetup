@@ -5,16 +5,16 @@
 GLuint VAO,VBO,shader;
 
 const auto vertex_shader = R"(
-#version 330
+#version 410
 layout (location = 0) in vec3 pos;
 
 void main(){
-    gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
+    gl_Position = vec4(pos.x*0.2, pos.y*0.2, pos.z*0.2, 1.0);
 
 })";
 
 const auto fragment_shader = R"(
-#version 330
+#version 410
 out vec4 color;
 
 void main(){
@@ -28,6 +28,8 @@ void compileShader();
 
 int main(){
     auto gl =std::make_unique<GLX>();
+    gl->setVersionMajor(3);
+    gl->setVersionMinor(3);
     gl->setAspectRatio(16,9);
     gl->setWindowWidth(1366);
     gl->setWindowHeight(768);
@@ -50,6 +52,7 @@ int main(){
     });
 
     gl->launch();
+    gl->inf();
     return 0;
     
 }
@@ -58,11 +61,11 @@ int main(){
 void CreateTriangle(){
     try
     {
-        GLfloat vertices[] =  {
-            -.3f, -.3f, 0.0f,
-             .3f, -.3f, 0.0f,
-            -0.3f,  0.1f, 0.0f,
-        }; 
+        GLfloat vertices[] =   {
+            -0.5f, -0.5f, 0.0f,
+             0.5f, -0.5f, 0.0f,
+             0.0f,  0.5f, 0.0f
+        };
 
         glGenVertexArrays(1,&VAO); //generating a vertex array that will hold vertex Buffers. Mainly vertex data
         glBindVertexArray(VAO);// just saying hy GPU, take this vertex array object.
@@ -70,7 +73,7 @@ void CreateTriangle(){
         glGenBuffers(1,&VBO); //creating Buffer Object to store vertex data
         glBindBuffer(GL_ARRAY_BUFFER,VBO);// saying GPU I want to work with this specific buffer for a specific purpose.
         glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
-        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,(void*)0);
+        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,nullptr);
         glEnableVertexAttribArray(0);
 
         //unbind VAO and VBO

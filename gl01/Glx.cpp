@@ -8,8 +8,9 @@
 GLX::GLX(){
     this->window = nullptr;
     this->is_running=false;
-    this->open_gl_version_major=3;
-    this->open_gl_version_minor=3;
+    //By Default Using OpenGL4.1
+    this->open_gl_version_major=4;
+    this->open_gl_version_minor=1;
     this->Window_Width=800;
     this->Window_Height=600;
     this->focus_on_init=false;
@@ -67,7 +68,9 @@ void GLX::inf(){
     std::cout<<"Version:\t"<<glGetString(GL_VERSION)<<"\n";
     std::cout<<"Shader Version:\t"<<glGetString(GL_SHADING_LANGUAGE_VERSION)<<"\n";
 }
-
+bool GLX::status(){
+    return this->is_running && glfwGetCurrentContext()!=nullptr;
+}
 
 bool GLX::launch(){
     GLenum err;
@@ -159,4 +162,10 @@ bool GLX::launch(){
         return false;
     }
 }
+GlxShader GLX::get_shader_tool(){
+    if (!this->status())return NULL;
+    GlxShader shader_tool(this->status());
+    return shader_tool;
+}
+
 
