@@ -2,14 +2,14 @@
 #include<memory>
 #include "glx/Glx.h"
 
-GLuint VAO,VBO,shader;
+GLuint VAO,vertexBufferID,shader;
 
 const auto vertex_shader = R"(
 #version 410
 layout (location = 0) in vec3 pos;
 
 void main(){
-    gl_Position = vec4(pos.x*0.2, pos.y*0.2, pos.z*0.2, 1.0);
+    gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
 
 })";
 
@@ -18,7 +18,7 @@ const auto fragment_shader = R"(
 out vec4 color;
 
 void main(){
-      color = vec4(1,1.0,1.0,1.0);
+      color = vec4(1.0,1.0,0.0,1.0);
 
 })";
 
@@ -27,6 +27,7 @@ void addShader(GLuint shader,const char* shader_code,GLenum shader_type);
 void compileShader();
 
 int main(){
+ 
     auto gl =std::make_unique<GLX>();
     gl->setVersionMajor(3);
     gl->setVersionMinor(3);
@@ -62,24 +63,27 @@ void CreateTriangle(){
     try
     {
         GLfloat vertices[] =   {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f
+            -0.75f, -0.75f, 0.0f,
+            0.75f, -0.75f, 0.0f,
+            -0.0f, 0.9f, 0.0f,
+
+            -0.25f, -0.25f, 0.0f,
+            0.25f, -0.25f, 0.0f,
+            -0.25f, 0.25f, 0.0f,
         };
 
-        glGenVertexArrays(1,&VAO); //generating a vertex array that will hold vertex Buffers. Mainly vertex data
-        glBindVertexArray(VAO);// just saying hy GPU, take this vertex array object.
+        glGenVertexArrays(1,&VAO); //generating a vertex array that will hold vertex attribute configuration
+        glBindVertexArray(VAO);// just saying hy GPU make it active for subsequent vertex attribute setup
         //creating buffer object
-        glGenBuffers(1,&VBO); //creating Buffer Object to store vertex data
-        glBindBuffer(GL_ARRAY_BUFFER,VBO);// saying GPU I want to work with this specific buffer for a specific purpose.
-        glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
-        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,nullptr);
-        glEnableVertexAttribArray(0);
+        glGenBuffers(1,&vertexBufferID); //creating Buffer Object to store vertex data
+        glBindBuffer(GL_ARRAY_BUFFER,vertexBufferID);// Bind the VBO to the GL_ARRAY_BUFFER target for data upload
+        glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);// Upload vertex data to the VBO. GL_STATIC_DRAW hints that the data is static
+        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,nullptr); // setting up VAO
+        glEnableVertexAttribArray(0);// Enable vertex attribute 0 for use in rendering.
 
-        //unbind VAO and VBO
-        glBindBuffer(GL_ARRAY_BUFFER,0);
-        glBindVertexArray(0);
-        std::cout<<"Triangle Defined successfully"<<std::endl;
+        //unbind VAO and vertexBufferID
+        glBindBuffer(GL_ARRAY_BUFFER,0);// Unbind the VBO to prevent accidental modifications.
+        glBindVertexArray(0);// Unbind the VAO to prevent accidental modifications.
     }catch(...)
     {
         std::cout<<"Error creating triangle"<<glGetError()<<std::endl;
@@ -108,7 +112,7 @@ void addShader(GLuint shader,const char* shader_code,GLenum shader_type){
     return;
 }
 
-void compileShader(){
+void compileShader() {
     shader = glCreateProgram();
     if (!shader)
     {
