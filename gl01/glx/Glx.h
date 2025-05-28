@@ -18,7 +18,7 @@ struct Screen{
 
 class GLX{
 private:
-    double version = 0.01;
+    double version = 0.1;
     GLFWwindow* window;
     Ratio WindowAspectRatio;
     Screen WindowScreen;

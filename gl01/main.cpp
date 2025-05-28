@@ -63,13 +63,9 @@ void CreateTriangle(){
     try
     {
         GLfloat vertices[] =   {
-            -0.75f, -0.75f, 0.0f,
-            0.75f, -0.75f, 0.0f,
-            -0.0f, 0.9f, 0.0f,
-
-            -0.25f, -0.25f, 0.0f,
-            0.25f, -0.25f, 0.0f,
-            -0.25f, 0.25f, 0.0f,
+            -0.2f, -0.2f, 0.0f,
+            0.2f, -0.2f, 0.0f,
+            -0.2f, 0.2f, 0.0f,
         };
 
         glGenVertexArrays(1,&VAO); //generating a vertex array that will hold vertex attribute configuration
