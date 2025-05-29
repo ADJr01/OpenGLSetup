@@ -1,27 +1,14 @@
 #include<iostream>
 #include<memory>
 #include "glx/Glx.h"
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <stdexcept>
 
 GLuint VAO,vertexBufferID,shader;
 
-const auto vertex_shader = R"(
-#version 410
-layout (location = 0) in vec4 pos;
-
-void main(){
-    gl_Position = pos;
-
-})";
-
-const auto fragment_shader = R"(
-#version 410
-out vec4 color;
-
-void main(){
-      color = vec4(.6,1.0,0.8,1.0);
-
-})";
-
+std::string parseShader(const std::string& filepath,const std::string& startMarker,const std::string& endMarker);
 void CreateTriangle();
 void addShader(GLuint shader,const char* shader_code,GLenum shader_type);
 void compileShader();
@@ -31,8 +18,8 @@ int main(){
     gl->setVersionMajor(3);
     gl->setVersionMinor(3);
     gl->setAspectRatio(16,9);
-    gl->setWindowWidth(static_cast<int>(gl->glx_primary_monitor_width()*0.8));
-    gl->setWindowHeight(static_cast<int>(gl->glx_primary_monitor_height()*0.8));
+    gl->setWindowWidth(static_cast<int>(gl->glx_primary_monitor_width()*0.5));
+    gl->setWindowHeight(static_cast<int>(gl->glx_primary_monitor_height()*0.5));
     gl->setWindowTitle("GLX Window");
     gl->setIsForwardCompatable(true);
     gl->setFocusOnInit(true);
@@ -137,4 +124,35 @@ void compileShader() {
         return;
     }
     std::cout<<"Shader compiled successfully"<<std::endl;
+}
+
+std::string parseShader(const std::string& filepath,const std::string& startMarker,const std::string& endMarker) {
+    std::ifstream file(filepath, std::ios::in | std::ios::binary);
+    if (!file) {
+        throw std::runtime_error("Unable to open file: " + filepath);
+    }
+
+    // Read entire file into a string
+    std::ostringstream buffer;
+    buffer << file.rdbuf();
+    std::string content = buffer.str();
+
+    // Find the start marker
+    size_t startPos = content.find(startMarker);
+    if (startPos == std::string::npos) {
+        // start marker not found
+        return "";
+    }
+    // Move past the start marker
+    startPos += startMarker.length();
+
+    // Find the end marker after the start
+    size_t endPos = content.find(endMarker, startPos);
+    if (endPos == std::string::npos) {
+        // If end marker not found, read until end of file
+        endPos = content.length();
+    }
+
+    // Extract and return the substring
+    return content.substr(startPos, endPos - startPos);
 }
