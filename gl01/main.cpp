@@ -6,10 +6,10 @@ GLuint VAO,vertexBufferID,shader;
 
 const auto vertex_shader = R"(
 #version 410
-layout (location = 0) in vec3 pos;
+layout (location = 0) in vec4 pos;
 
 void main(){
-    gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
+    gl_Position = pos;
 
 })";
 
@@ -18,7 +18,7 @@ const auto fragment_shader = R"(
 out vec4 color;
 
 void main(){
-      color = vec4(1.0,1.0,0.0,1.0);
+      color = vec4(.6,1.0,0.8,1.0);
 
 })";
 
@@ -27,7 +27,6 @@ void addShader(GLuint shader,const char* shader_code,GLenum shader_type);
 void compileShader();
 
 int main(){
- 
     auto gl =std::make_unique<GLX>();
     gl->setVersionMajor(3);
     gl->setVersionMinor(3);
@@ -42,7 +41,6 @@ int main(){
     
     gl->onTick([=]()
     {
-        glClearColor(0.0f,0.0f,0.0f,1.f);
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(shader);
         glBindVertexArray(VAO);
@@ -63,9 +61,9 @@ void CreateTriangle(){
     try
     {
         GLfloat vertices[] =   {
-            -0.2f, -0.2f, 0.0f,
-            0.2f, -0.2f, 0.0f,
-            -0.2f, 0.2f, 0.0f,
+            -0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
         };
 
         glGenVertexArrays(1,&VAO); //generating a vertex array that will hold vertex attribute configuration
@@ -73,8 +71,8 @@ void CreateTriangle(){
         //creating buffer object
         glGenBuffers(1,&vertexBufferID); //creating Buffer Object to store vertex data
         glBindBuffer(GL_ARRAY_BUFFER,vertexBufferID);// Bind the VBO to the GL_ARRAY_BUFFER target for data upload
-        glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);// Upload vertex data to the VBO. GL_STATIC_DRAW hints that the data is static
-        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,nullptr); // setting up VAO
+        glBufferData(GL_ARRAY_BUFFER,9*sizeof(GLfloat),vertices,GL_STATIC_DRAW);// Upload vertex data to the VBO. GL_STATIC_DRAW hints that the data is static
+        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(GLfloat)*3,nullptr); // setting up VAO
         glEnableVertexAttribArray(0);// Enable vertex attribute 0 for use in rendering.
 
         //unbind VAO and vertexBufferID
