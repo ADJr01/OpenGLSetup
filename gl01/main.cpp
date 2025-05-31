@@ -102,7 +102,7 @@ void addShader(GLuint shader,const char* shader_code,GLenum shader_type){
     if (!result)
     {
         glGetShaderInfoLog(shader_program,1024,NULL,infoLog);
-        std::cout<<"Failed to compile shader of type "<<shader_type<<" "<<infoLog<<std::endl;
+        std::cout<<"Failed to compile shader of type "<<shader_type<<" "<<infoLog<<"\n";
         return;
     }
     glAttachShader(shader,shader_program);
