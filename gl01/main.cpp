@@ -14,6 +14,7 @@ void addShader(GLuint shader,const char* shader_code,GLenum shader_type);
 void compileShader();
 
 int main(){
+
     auto gl =std::make_unique<GLX>();
     gl->setVersionMajor(3);
     gl->setVersionMinor(3);
@@ -25,20 +26,35 @@ int main(){
     gl->setFocusOnInit(true);
     gl->addPostLaunchProcedure(CreateTriangle);
     gl->addPostLaunchProcedure(compileShader);
+
     
     gl->onTick([=]()
     {
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(shader);
+        float time = std::sin(glfwGetTime());
+        float green_value= (time/2.0f)+0.4f;
+        float red_value= (time/2.0f)+0.6f;
+        float blue_value= (std::cos(time)/2.0f)+0.6f;
+        int vertexColorLocation_red  = glGetUniformLocation(shader,"red");
+        int vertexColorLocation_green  = glGetUniformLocation(shader,"green");
+        int vertexColorLocation_blue  = glGetUniformLocation(shader,"blue");
+        if (vertexColorLocation_red != -1 && vertexColorLocation_green != -1 && vertexColorLocation_blue != -1)
+        {
+            glUniform1f(vertexColorLocation_red,red_value);
+            glUniform1f(vertexColorLocation_green,green_value);
+            glUniform1f(vertexColorLocation_blue,blue_value);
+        }else if (vertexColorLocation_red == -1 || vertexColorLocation_green == -1 || vertexColorLocation_blue == -1)
+            std::cout<<"Failed to set Uniform !\n";
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES,0,3);
-        glUseProgram(0);
         glBindVertexArray(0);
 
     });
 
     gl->launch();
-    gl->inf();
+    glDeleteProgram(shader);
+    std::cout<<"glx end\n";
     return 0;
     
 }
@@ -100,8 +116,10 @@ void compileShader() {
         std::cout<<"Failed to create shader"<<std::endl;
         return;
     }
-    addShader(shader,vertex_shader,GL_VERTEX_SHADER);
-    addShader(shader,fragment_shader,GL_FRAGMENT_SHADER);
+    std::string vertex_shader = parseShader("./res/shaders/base.shader","#shader vertex","//$");
+    std::string fragment_shader = parseShader("./res/shaders/base.shader","#shader fragment","//fragEnd");
+    addShader(shader,vertex_shader.c_str(),GL_VERTEX_SHADER);
+    addShader(shader,fragment_shader.c_str(),GL_FRAGMENT_SHADER);
 
     GLint result = 0;
     GLchar infoLog[1024] = {0};
