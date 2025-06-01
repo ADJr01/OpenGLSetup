@@ -1,0 +1,3 @@
+[submodule "glx"]
+	path = glx
+	url = https://github.com/ADJr01/GLX.git
