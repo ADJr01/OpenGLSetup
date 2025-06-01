@@ -19,8 +19,8 @@ int main(){
     gl->setVersionMajor(3);
     gl->setVersionMinor(3);
     gl->setAspectRatio(16,9);
-    gl->setWindowWidth(static_cast<int>(gl->glx_primary_monitor_width()*0.5));
-    gl->setWindowHeight(static_cast<int>(gl->glx_primary_monitor_height()*0.5));
+    gl->setWindowWidth(static_cast<int>(gl->glx_primary_monitor_width()*0.9));
+    gl->setWindowHeight(static_cast<int>(gl->glx_primary_monitor_height()*0.9));
     gl->setWindowTitle("GLX Window");
     gl->setIsForwardCompatable(true);
     gl->setFocusOnInit(true);
@@ -47,7 +47,7 @@ int main(){
         }else if (vertexColorLocation_red == -1 || vertexColorLocation_green == -1 || vertexColorLocation_blue == -1)
             std::cout<<"Failed to set Uniform !\n";
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES,0,3);
+        glDrawArrays(GL_TRIANGLES,0,6);
         glBindVertexArray(0);
 
     });
@@ -63,10 +63,13 @@ int main(){
 void CreateTriangle(){
     try
     {
-        GLfloat vertices[] =   {
-            -0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
+        GLfloat vertices[] =    {
+             -0.90, -0.90 , // Triangle 1
+             0.85, -0.90 ,
+             -0.90, 0.85 ,
+             0.90, -0.85 , // Triangle 2
+             0.90, 0.90 ,
+             -0.85, 0.90 
         };
 
         glGenVertexArrays(1,&VAO); //generating a vertex array that will hold vertex attribute configuration
@@ -74,8 +77,8 @@ void CreateTriangle(){
         //creating buffer object
         glGenBuffers(1,&vertexBufferID); //creating Buffer Object to store vertex data
         glBindBuffer(GL_ARRAY_BUFFER,vertexBufferID);// Bind the VBO to the GL_ARRAY_BUFFER target for data upload
-        glBufferData(GL_ARRAY_BUFFER,9*sizeof(GLfloat),vertices,GL_STATIC_DRAW);// Upload vertex data to the VBO. GL_STATIC_DRAW hints that the data is static
-        glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(GLfloat)*3,nullptr); // setting up VAO
+        glBufferData(GL_ARRAY_BUFFER,12*sizeof(GLfloat),vertices,GL_STATIC_DRAW);// Upload vertex data to the VBO. GL_STATIC_DRAW hints that the data is static
+        glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,sizeof(GLfloat)*2,nullptr); // setting up VAO
         glEnableVertexAttribArray(0);// Enable vertex attribute 0 for use in rendering.
 
         //unbind VAO and vertexBufferID

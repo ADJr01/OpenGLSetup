@@ -16,6 +16,6 @@ uniform float red;
 uniform float green;
 uniform float blue;
 void main(){
-    color = vec4(sin(red)/vertexPositionData.x,(cos(green)*sin(vertexPositionData.y)),tan(blue)*cos(vertexPositionData.z),1.0);  
+    color = vec4(sin(red)/tan(vertexPositionData.x),(cos(green)*sin(vertexPositionData.y)),sin(blue)*cos(vertexPositionData.z),1.0);  
 
 }//fragEnd
