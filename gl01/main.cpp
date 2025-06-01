@@ -35,7 +35,7 @@ int main(){
         float time = std::sin(glfwGetTime());
         float green_value= (time/2.0f)+0.4f;
         float red_value= (time/2.0f)+0.6f;
-        float blue_value= (std::cos(time)/2.0f)+0.6f;
+        float blue_value= (time/2.0f)+0.6f;
         int vertexColorLocation_red  = glGetUniformLocation(shader,"red");
         int vertexColorLocation_green  = glGetUniformLocation(shader,"green");
         int vertexColorLocation_blue  = glGetUniformLocation(shader,"blue");

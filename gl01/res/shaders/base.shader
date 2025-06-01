@@ -1,10 +1,10 @@
 ﻿#shader vertex
 #version 410
 layout (location = 0) in vec3 pos;
-out vec4 vertexPositionData;
+out vec3 vertexPositionData;
 
 void main(){
-    vertexColor=vec4(pos,1.0);
+    vertexPositionData=vec4(pos,1.0);
     gl_Position = vec4(pos,1.0);
 }//$
 
@@ -16,6 +16,6 @@ uniform float red;
 uniform float green;
 uniform float blue;
 void main(){
-    color = vec4(red,green,blue,1.0);  
+    color = vec4(sin(red)/vertexPositionData.x,(cos(green)*sin(vertexPositionData.y)),tan(blue)*cos(vertexPositionData.z),1.0);  
 
 }//fragEnd
