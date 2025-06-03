@@ -14,7 +14,6 @@ void addShader(GLuint shader,const char* shader_code,GLenum shader_type);
 void compileShader();
 
 int main(){
-
     auto gl =std::make_unique<GLX>();
     gl->setVersionMajor(3);
     gl->setVersionMinor(3);
