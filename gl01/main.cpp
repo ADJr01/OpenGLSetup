@@ -53,6 +53,7 @@ int main(){
 
     gl->launch();
     glDeleteProgram(shader);
+    glDeleteVertexArrays(1,&VAO);
     std::cout<<"glx end\n";
     return 0;
     
