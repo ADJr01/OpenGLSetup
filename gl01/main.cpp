@@ -71,9 +71,13 @@ void CreateTriangle(){
              0.90, 0.90 ,
              -0.85, 0.90 
         };
+        if (glIsVertexArray(VAO)==GL_FALSE)
+        {
+            std::cout<<"setting up vao\n";
+            glGenVertexArrays(1,&VAO); //generating a vertex array that will hold vertex attribute configuration
+            glBindVertexArray(VAO);// just saying hy GPU make it active for subsequent vertex attribute setup
+        }
 
-        glGenVertexArrays(1,&VAO); //generating a vertex array that will hold vertex attribute configuration
-        glBindVertexArray(VAO);// just saying hy GPU make it active for subsequent vertex attribute setup
         //creating buffer object
         glGenBuffers(1,&vertexBufferID); //creating Buffer Object to store vertex data
         glBindBuffer(GL_ARRAY_BUFFER,vertexBufferID);// Bind the VBO to the GL_ARRAY_BUFFER target for data upload
